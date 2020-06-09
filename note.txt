@@ -1,0 +1,25 @@
+trước khi vẽ hình tronf phải set moveTo den toa độ để có thể vẽ đúng
+arc là hàm vẽ hình tròn.
+PaneRendererMarks.prototype.draw là phương thức vx có dấu chấm
+
+SeriesPriceLinePaneView.prototype._updateImpl  phương thức tạo đường price mới nhất.
+
+PaneRendererArea.prototype.draw method vẽ đường mới.
+
+CanvasWrapper  là vẽ circle
+
+8598 line xu ly viec ve ra.
+
+this._drawSources(this._ctx); dag nghi no la thu ve ra line;
+
+CrosshairMarksPaneView  no la htang quan li cross hair
+
+Series.prototype._markerRadius
+
+HorizontalLineRenderer.prototype.draw  ve duong ngang.
+. S
+drawLine hàm vẽ đường thẳng.
+
+PaneWidget.prototype._drawSource = function (source, ctx) {
+
+    arcTo vẽ đường thẳng từ tọa đọ này đến tọa độ khác
