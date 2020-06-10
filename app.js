@@ -45,7 +45,6 @@ adminNamespace.on("connect", (socket) => {
         sender: u.id
       }
     }).then(d => {
-
       adminNamespace.emit('chatValue', { value: { user: u, arr: d.data.result } });
     }).catch(e => {
 
@@ -57,7 +56,6 @@ adminNamespace.on("connect", (socket) => {
 
   socket.on('admin-sent-content', data => {
     let { src, content, user } = data;
-
     Axios.post(`${api}/api/chat/save`,
       {
         sender: 'admin',
@@ -75,9 +73,9 @@ adminNamespace.on("connect", (socket) => {
       params: {
         pageNumber, sender: sender.id
       }
-    }).then(d=>{
+    }).then(d => {
       adminNamespace.emit('chatValue', { value: { user: u, arr: d.data.result, load: true } });
-    }).catch(e=>{
+    }).catch(e => {
 
     })
   })
@@ -93,45 +91,21 @@ adminNamespace.on("connect", (socket) => {
     adminNamespace.emit("server-sent-user", Users.getArrUsers());
   })
 
-  socket.on("client-send-Username", function (data) {
-    if (mangAdminUsers.indexOf(data) >= 0) {
-      socket.emit("server-send-dki-thatbai");
-    } else {
-      mangAdminUsers.push(data);
-      socket.Username = data;
-      adminNamespace.emit("server-send-dki-thanhcong", data);
-      adminNamespace.emit("server-send-danhsach-Users", mangAdminUsers);
-    }
-  });
 
   socket.on("disconnect", function () {
     adminLeave(socket.id)
   });
 
-  socket.on("user-send-message", function (data) { // data gom co id cua client va content
-
-    adminNamespace.emit("server-send-message", { un: socket.Username, nd: data });
-    //mangAdminUsers.emit("server-send-message", { un: socket.Username, nd: data });
-    io.to(data.idUser).emit("server-send-message", { un: socket.Username, nd: data });
-
-  });
-
-  socket.on("toi-dang-go-chu", function () {
-    var s = socket.id + " dang go chu";
-    adminNamespace.emit("ai-do-dang-go-chu", s);
-  });
-
-  socket.on("toi-stop-go-chu", function () {
-    adminNamespace.emit("ai-do-STOP-go-chu");
-  });
 })
-
-
 
 // client connect to chat
 io.on("connection", function (socket) {
   socket.on("client-send-Username", async function (data) {
     // let u = await Users.checkUserFollowFullName(data);
+    if (!data._id) {
+      io.to(socket.id).emit('login-failure');
+      return;
+    }
     let u1 = await Users.getCurrentUser(data._id);
     socket.join(data._id);
     let user = u1;
@@ -168,15 +142,19 @@ io.on("connection", function (socket) {
   });
 
   socket.on("user-send-message", function (data) {
-    let u = Users.updateRead(socket.Username._id);
-    Axios.post(`${api}/api/chat/save`,
-      {
-        sender: socket.Username._id,
-        receiver: 'admin',
-        content: data.content
-      });
-    adminNamespace.emit("userSentMessage", { user: u, data });
-    io.to(socket.Username._id).emit("server-send-message", { un: socket.Username, nd: data });
+    if (socket.Username) {
+      let u = Users.updateRead(socket.Username._id);
+      Axios.post(`${api}/api/chat/save`,
+        {
+          sender: socket.Username._id,
+          receiver: 'admin',
+          content: data.content
+        });
+      adminNamespace.emit("userSentMessage", { user: u, data });
+      io.to(socket.Username._id).emit("server-send-message", { un: socket.Username, nd: data });
+    } else {
+      io.to(socket.id).emit('login-failure');
+    }
     //adminNamespace.emit("server-send-message", { un: socket.Username, nd: data })
   });
 });
