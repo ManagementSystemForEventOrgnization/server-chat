@@ -148,6 +148,7 @@ io.on("connection", function (socket) {
         {
           sender: socket.Username._id,
           receiver: 'admin',
+          fullName: socket.Username.fullName,
           content: data.content
         });
       adminNamespace.emit("userSentMessage", { user: u, data });
