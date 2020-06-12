@@ -15,10 +15,11 @@ const {
   pushClientRoom
 } = require('./utils/admins');
 
-
+app.use(express.json())
 app.set('view engine', "ejs");
 app.set("views", "./views/layouts");
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: false }));
 
 server.listen(process.env.PORT || 4000, () => {
   console.log('open localhost:4000');
@@ -159,6 +160,13 @@ io.on("connection", function (socket) {
     //adminNamespace.emit("server-send-message", { un: socket.Username, nd: data })
   });
 });
+
+
+app.post("/api/post/comment", (req, res) => {
+   let { eventId, cmt } = req.body;
+  io.emit(`cmt-${eventId}`, cmt);
+  res.send({ 't': true });
+})
 
 app.get("/", function (req, res) {
   res.render("trangchu");
