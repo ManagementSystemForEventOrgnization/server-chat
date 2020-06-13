@@ -27,7 +27,7 @@ server.listen(process.env.PORT || 4000, () => {
 
 var mangUsers = [];
 var mangAdminUsers = [];
-Users.userJoin('5ec8cff211a11d17ae93aed3', 'ptmai', "");
+// Users.userJoin('5ec8cff211a11d17ae93aed3', 'ptmai', "");
 
 adminNamespace.on("connect", (socket) => {
 
@@ -41,7 +41,7 @@ adminNamespace.on("connect", (socket) => {
   socket.on('getContent', data => {
 
     let u = Users.getCurrentUser(data.id);
-    if(!u){
+    if (!u) {
       return;
     }
     Axios.get(`${api}/api/chat/get_list`, {
@@ -70,19 +70,6 @@ adminNamespace.on("connect", (socket) => {
     io.to(user.id).emit('admin-reply', { src, content, user })
   })
 
-  socket.on('load_more_messenger', data => {
-    let { pageNumber, sender } = data;
-    let u = Users.getCurrentUser(sender.id);
-    Axios.get(`${api}/api/chat/get_list`, {
-      params: {
-        pageNumber, sender: sender.id
-      }
-    }).then(d => {
-      adminNamespace.emit('chatValue', { value: { user: u, arr: d.data.result, load: true } });
-    }).catch(e => {
-
-    })
-  })
 
   socket.on('SeenMessage', data => {
     let u = updateSeen(data.id);
@@ -121,14 +108,14 @@ io.on("connection", function (socket) {
     }
 
     socket.Username = data;
-    socket.emit("server-send-dki-thanhcong", data);
-    io.sockets.emit("server-send-danhsach-Users", Users.getArrUsers());
+    // socket.emit("server-send-dki-thanhcong", data);
+    // io.sockets.emit("server-send-danhsach-Users", Users.getArrUsers());
 
   });
 
-  socket.on('chatValue', data => {
-    adminNamespace.emit('chatValue', { value: data });
-  });
+  // socket.on('chatValue', data => {
+  //   adminNamespace.emit('chatValue', { value: data });
+  // });
 
   socket.on("disconnect", function () {
     if (socket.Username) {
@@ -166,7 +153,7 @@ io.on("connection", function (socket) {
 
 
 app.post("/api/post/comment", (req, res) => {
-   let { eventId, cmt } = req.body;
+  let { eventId, cmt } = req.body;
   io.emit(`cmt-${eventId}`, cmt);
   res.send({ 't': true });
 })
