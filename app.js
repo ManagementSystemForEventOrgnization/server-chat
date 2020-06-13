@@ -90,8 +90,6 @@ adminNamespace.on("connect", (socket) => {
 // client connect to chat
 io.on("connection", function (socket) {
   socket.on("client-send-Username", async function (data) {
-
-    console.log(data);
     // let u = await Users.checkUserFollowFullName(data);
     if (!data._id) {
       io.to(socket.id).emit('login-failure');
@@ -133,7 +131,6 @@ io.on("connection", function (socket) {
   });
 
   socket.on("user-send-message", function (data) {
-    console.log(data);
     if (socket.Username) {
       let u = Users.updateRead(socket.Username._id);
       Axios.post(`${api}/chat/save`,
