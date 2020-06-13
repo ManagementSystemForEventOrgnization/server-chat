@@ -42,7 +42,7 @@ adminNamespace.on("connect", (socket) => {
     if (!u) {
       return;
     }
-    Axios.get(`${api}/api/chat/get_list`, {
+    Axios.get(`${api}/chat/get_list`, {
       params: {
         sender: u.id
       }
@@ -58,7 +58,7 @@ adminNamespace.on("connect", (socket) => {
 
   socket.on('admin-sent-content', data => {
     let { src, content, user } = data;
-    Axios.post(`${api}/api/chat/save`,
+    Axios.post(`${api}/chat/save`,
       {
         sender: 'admin',
         receiver: user.id,
@@ -90,6 +90,8 @@ adminNamespace.on("connect", (socket) => {
 // client connect to chat
 io.on("connection", function (socket) {
   socket.on("client-send-Username", async function (data) {
+
+    console.log(data);
     // let u = await Users.checkUserFollowFullName(data);
     if (!data._id) {
       io.to(socket.id).emit('login-failure');
@@ -131,9 +133,10 @@ io.on("connection", function (socket) {
   });
 
   socket.on("user-send-message", function (data) {
+    console.log(data);
     if (socket.Username) {
       let u = Users.updateRead(socket.Username._id);
-      Axios.post(`${api}/api/chat/save`,
+      Axios.post(`${api}/chat/save`,
         {
           sender: socket.Username._id,
           receiver: 'admin',
@@ -145,7 +148,7 @@ io.on("connection", function (socket) {
     } else {
       io.to(socket.id).emit('login-failure');
     }
-    //adminNamespace.emit("server-send-message", { un: socket.Username, nd: data })
+    adminNamespace.emit("server-send-message", { un: socket.Username, nd: data })
   });
 });
 
