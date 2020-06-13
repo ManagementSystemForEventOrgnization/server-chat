@@ -27,7 +27,7 @@ server.listen(process.env.PORT || 4000, () => {
 
 var mangUsers = [];
 var mangAdminUsers = [];
-Users.userJoin('5ec8e500bc1ae931e85dfa3c', 'ptmai', "");
+Users.userJoin('5ec8cff211a11d17ae93aed3', 'ptmai', "");
 
 adminNamespace.on("connect", (socket) => {
 
@@ -41,6 +41,9 @@ adminNamespace.on("connect", (socket) => {
   socket.on('getContent', data => {
 
     let u = Users.getCurrentUser(data.id);
+    if(!u){
+      return;
+    }
     Axios.get(`${api}/api/chat/get_list`, {
       params: {
         sender: u.id
