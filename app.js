@@ -4,7 +4,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 const adminNamespace = io.of('/admin');
 const Axios = require('axios');
-const api = 'http://localhost:5000';
+const api = 'https://event-orgnization.herokuapp.com/api';
 const Users = require('./utils/users');
 const {
   adminJoin,
@@ -25,8 +25,6 @@ server.listen(process.env.PORT || 4000, () => {
   console.log('open localhost:4000');
 });
 
-var mangUsers = [];
-var mangAdminUsers = [];
 // Users.userJoin('5ec8cff211a11d17ae93aed3', 'ptmai', "");
 
 adminNamespace.on("connect", (socket) => {
