@@ -80,11 +80,15 @@ adminNamespace.on("connect", (socket) => {
     adminNamespace.emit("server-sent-user", Users.getArrUsers());
   })
 
+  socket.on('update-read', data=>{
+    let user = data.user;
+    Users.updateSeen(user.id);
+  });
+
 
   socket.on("disconnect", function () {
     adminLeave(socket.id)
   });
-
 })
 
 // client connect to chat
@@ -148,7 +152,6 @@ io.on("connection", function (socket) {
     //adminNamespace.emit("server-send-message", { un: socket.Username, nd: data })
   });
 });
-
 
 app.post("/api/post/comment", (req, res) => {
   let { eventId, cmt } = req.body;

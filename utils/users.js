@@ -87,7 +87,7 @@ module.exports = {
   },
 
   updateSeen: (id) => {
-    let u = users.find(user => user.fullName === fullName);
+    let u = users.find(user => user[key] === id);
     if (u) {
       u.number = 0;
       u.isRead = true;
